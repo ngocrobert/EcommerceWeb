@@ -1,6 +1,6 @@
 ﻿@model WebBanHangOnline.Models.EF.News
 @{
-	ViewData["Title"] = "Thêm mới tin tức";
+	ViewData["Title"] = "Cập nhật tin tức";
 	Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -16,7 +16,7 @@
 			<a href="/admin/news" class="nav-link">Tin tức</a>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="#" class="nav-link">Thêm mới</a>
+			<a href="#" class="nav-link">Cập nhật</a>
 		</li>
 	</ul>
 }
@@ -26,12 +26,12 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1>Thêm mới Tin tức</h1>
+					<h1>Cập nhật Tin tức</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
 						<li class="breadcrumb-item"><a href="#">Tin tức</a></li>
-						<li class="breadcrumb-item active">Thêm mới</li>
+						<li class="breadcrumb-item active">Cập nhật</li>
 					</ol>
 				</div>
 			</div>
@@ -44,7 +44,7 @@
 		<!-- Default box -->
 		<div class="card">
 			<div class="card-header">
-				<h3 class="card-title">Thông tin thêm mới Tin tức</h3>
+				<h3 class="card-title">Thông tin Cập nhật Tin tức</h3>
 
 
 			</div>
@@ -81,6 +81,10 @@
 							@Html.TextAreaFor(x => x.Detail, new {@class="form-control", @id="txtDetail"})
 						</div>
 						<div class="form-group">
+								<label for="exampleInputPassword1">Hiển thị</label>
+								@Html.CheckBoxFor(x => x.IsActive, new {@checked="@checked"})
+						</div>
+						<div class="form-group">
 							<label for="exampleInputPassword1">Seo Title</label>
 							@Html.TextAreaFor(x => x.SeoTitle, new {@class="form-control"})
 						</div>
@@ -93,8 +97,8 @@
 							@Html.TextAreaFor(x => x.SeoKeywords, new {@class="form-control"})
 						</div>
 						<div class="form-group">
-							<a href="/admin/category" class="btn btn-danger">Quay lại</a>
-							<button type="submit" class="btn btn-primary">Submit</button>
+							<a href="/admin/news" class="btn btn-danger">Quay lại</a>
+							<button type="submit" class="btn btn-primary">Lưu</button>
 						</div>
 					</div>
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebBanHangOnline.Data;
 using WebBanHangOnline.Models.EF;
 
@@ -43,6 +44,59 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             }
             return View(model);
         }
+        [Route("edit")]
+        [Route("edit/{id}")]
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var item = _db.News.Find(id);
+            return View(item);
+        }
+        [Route("edit/{id}")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(News model)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                model.ModifiedDate = DateTime.Now;
+                model.Alias = WebBanHangOnline.Models.Filter.FilterChar(model.Title);
+                _db.News.Attach(model);
+                _db.Entry(model).State = EntityState.Modified;
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+		[Route("delete")]
+		[HttpPost]
+        public IActionResult Delete(int id)
+		{
+            var item = _db.News.Find(id);
+            if (item != null)
+			{
+                _db.News.Remove(item);
+                _db.SaveChanges();
+                return Json(new { success = true });
+			}
+            return Json(new { success = false });
 
+        }
+        [Route("IsActive")]
+        [HttpPost]
+        public IActionResult IsActive(int id)
+        {
+            var item = _db.News.Find(id);
+            if (item != null)
+            {
+                item.IsActive = !item.IsActive;
+                _db.Entry(item).State = EntityState.Modified;
+                _db.SaveChanges();
+                return Json(new { success = true, isActive = item.IsActive });
+            }
+            return Json(new { success = false });
+
+        }
     }
 }
