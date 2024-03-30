@@ -24,9 +24,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
 			{
                 page = 1;
 			}
+            // lấy ra danh sách tin tức sắp xếp theo bài mới nhất theo Id
             IEnumerable<News> items = _db.News.OrderByDescending(x => x.Id);
             if (!string.IsNullOrEmpty(SearchText))
             {
+                // tìm kiếm tin tức theo bí danh hoặc tiêu đề
                 items = items.Where(x => x.Alias.Contains(SearchText) || x.Title.Contains(SearchText));
             }
             var pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
@@ -41,6 +43,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Thêm 1 tin tức
+        /// </summary>
+        /// <param name="model">tin tức</param>
+        /// <returns>tin tức</returns>
         [Route("add")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -58,6 +65,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             }
             return View(model);
         }
+        /// <summary>
+        /// Sửa 1 tin tức
+        /// </summary>
+        /// <param name="id">Id tin tức</param>
+        /// <returns>tin tức</returns>
         [Route("edit")]
         [Route("edit/{id}")]
         [HttpGet]
@@ -77,12 +89,18 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
                 model.ModifiedDate = DateTime.Now;
                 model.Alias = WebBanHangOnline.Models.Filter.FilterChar(model.Title);
                 _db.News.Attach(model);
+                // đánh dấu model đã được sửa => update CSDL
                 _db.Entry(model).State = EntityState.Modified;
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(model);
         }
+        /// <summary>
+        /// Xóa 1 tin tức
+        /// </summary>
+        /// <param name="id">Id tin tức</param>
+        /// <returns>1 đối tượng JSON</returns>
 		[Route("delete")]
 		[HttpPost]
         public IActionResult Delete(int id)
@@ -97,6 +115,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return Json(new { success = false });
 
         }
+        /// <summary>
+        /// Chỉnh sửa trạng thái tin tức
+        /// </summary>
+        /// <param name="id">Id tin tức</param>
+        /// <returns>1 đối tượng JSON</returns>
         [Route("IsActive")]
         [HttpPost]
         public IActionResult IsActive(int id)
@@ -112,6 +135,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return Json(new { success = false });
 
         }
+        /// <summary>
+        /// Xóa nhiều tin tức
+        /// </summary>
+        /// <param name="ids">danh sách Id tin tức</param>
+        /// <returns>1 đối tượng JSON</returns>
 		[Route("deleteAll")]
 		[HttpPost]
         public IActionResult DeleteAll(string ids)

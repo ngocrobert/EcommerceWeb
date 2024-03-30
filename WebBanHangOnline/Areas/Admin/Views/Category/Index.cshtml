@@ -13,7 +13,7 @@
         <a href="/admin" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Tin tức</a>
+        <a href="#" class="nav-link">Danh mục</a>
       </li>
     </ul>
 }
@@ -23,12 +23,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Quản lý Tin tức</h1>
+            <h1>Quản lý Danh mục</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Tin tức</li>
+              <li class="breadcrumb-item active">Danh mục</li>
             </ol>
           </div>
         </div>
@@ -41,7 +41,7 @@
       <!-- Default box -->
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Danh sách Tin tức</h3>
+          <h3 class="card-title">Danh sách Danh mục</h3>
 
           <div class="card-tools">
             <a href="/admin/category/add" class="btn btn-primary">Thêm mới</a>
@@ -52,12 +52,13 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Tên Tin tức</th>
+                        <th>Tên Danh mục</th>
                         <th>Thứ tự</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
+                    @*Kiểm tra bản ghi trong CSDL*@
                     @if (Model != null && Model.Any())
                     {
                         var i = 1;
@@ -100,6 +101,7 @@
 @section scripts{
     <script>
         $(document).ready(function () {
+            // Xóa 1 danh mục qua AJAX
             $('body').on('click','.btnDelete', function () {
                 var id = $(this).data("id");
                 //alert(id);

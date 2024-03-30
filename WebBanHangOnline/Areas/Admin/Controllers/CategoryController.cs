@@ -27,6 +27,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Thêm 1 danh mục
+        /// </summary>
+        /// <param name="model">danh mục</param>
+        /// <returns>danh mục</returns>
         [Route("add")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -36,6 +41,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             {
                 model.CreatedDate = DateTime.Now;
                 model.ModifiedDate = DateTime.Now;
+                // thêm bí danh từ hàm có sẵn
                 model.Alias = WebBanHangOnline.Models.Filter.FilterChar(model.Title);
                 _db.Categories.Add(model);
                 _db.SaveChanges();
@@ -44,6 +50,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return View(model);
 
         }
+        /// <summary>
+        /// Sửa 1 danh mục
+        /// </summary>
+        /// <param name="id">id của danh mục</param>
+        /// <returns>danh mục</returns>
         [Route("edit")]
         [Route("edit/{id}")]
         [HttpGet]
@@ -79,6 +90,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return View(model);
 
         }
+        /// <summary>
+        /// Xóa 1 danh mục
+        /// </summary>
+        /// <param name="id">id danh mục</param>
+        /// <returns>1 đối tượng JSON</returns>
         [Route("delete")]
         [HttpPost]
         public IActionResult Delete(int id)

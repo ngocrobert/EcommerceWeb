@@ -1,6 +1,6 @@
 ﻿@model WebBanHangOnline.Models.EF.Category
 @{
-	ViewData["Title"] = "Thêm mới Tin tức";
+	ViewData["Title"] = "Thêm mới Danh mục";
 	Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -13,7 +13,7 @@
 			<a href="/admin" class="nav-link">Home</a>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="/admin/category" class="nav-link">Tin tức</a>
+			<a href="/admin/category" class="nav-link">Danh mục</a>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
 			<a href="#" class="nav-link">Thêm mới</a>
@@ -26,11 +26,11 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1>Thêm mới Tin tức</h1>
+					<h1>Thêm mới Danh mục</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
-						<li class="breadcrumb-item"><a href="#">Tin tức</a></li>
+						<li class="breadcrumb-item"><a href="#">Danh mục</a></li>
 						<li class="breadcrumb-item active">Thêm mới</li>
 					</ol>
 				</div>
@@ -44,7 +44,7 @@
 		<!-- Default box -->
 		<div class="card">
 			<div class="card-header">
-				<h3 class="card-title">Thông tin thêm mới Tin tức</h3>
+				<h3 class="card-title">Thông tin thêm mới Danh mục</h3>
 
 
 			</div>
@@ -57,8 +57,8 @@
 					<!-- your steps content here -->
 					<div id="logins-part" class="content active dstepper-block" role="tabpanel" aria-labelledby="logins-part-trigger">
 						<div class="form-group">
-							<label for="exampleInputEmail1">Tên Tin tức</label>
-							@Html.TextBoxFor(x => x.Title, new {@class="form-control", @placeholder="Tên Tin tức"})
+							<label for="exampleInputEmail1">Tên Danh mục</label>
+							@Html.TextBoxFor(x => x.Title, new {@class="form-control", @placeholder="Tên Danh mục"})
 							@Html.ValidationMessageFor(x => x.Title, null, new{@class="text-danger"})
 						</div>
 						<div class="form-group">

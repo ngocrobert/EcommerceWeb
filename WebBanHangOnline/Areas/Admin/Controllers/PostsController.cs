@@ -25,6 +25,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Thêm 1 bài viết
+        /// </summary>
+        /// <param name="model">bài viết</param>
+        /// <returns>bài viết</returns>
         [Route("add")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -50,6 +55,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             var item = _db.Posts.Find(id);
             return View(item);
         }
+        /// <summary>
+        /// Sửa 1 bài viết
+        /// </summary>
+        /// <param name="model">bài viết</param>
+        /// <returns>bài viết</returns>
         [Route("edit/{id}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,6 +77,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             }
             return View(model);
         }
+        /// <summary>
+        /// Xóa 1 bài viết
+        /// </summary>
+        /// <param name="id">id bài viết</param>
+        /// <returns>1 đoạn JSON</returns>
         [Route("delete")]
         [HttpPost]
         public IActionResult Delete(int id)
@@ -81,6 +96,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return Json(new { success = false });
 
         }
+        /// <summary>
+        /// Chỉnh sửa trạng thái bài viết
+        /// </summary>
+        /// <param name="id">id bài viết</param>
+        /// <returns>1 đoạn JSON</returns>
         [Route("IsActive")]
         [HttpPost]
         public IActionResult IsActive(int id)
@@ -96,6 +116,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return Json(new { success = false });
 
         }
+        /// <summary>
+        /// Xóa nhiều bài viết
+        /// </summary>
+        /// <param name="ids">danh sách Id bài viết</param>
+        /// <returns>1 đoạn JSON</returns>
         [Route("deleteAll")]
         [HttpPost]
         public IActionResult DeleteAll(string ids)
