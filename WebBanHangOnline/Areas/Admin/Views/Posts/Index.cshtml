@@ -1,9 +1,7 @@
-﻿@model X.PagedList.PagedList<WebBanHangOnline.Models.EF.News>
-@*@model PagedList.PagedList<WebBanHangOnline.Models.EF.News>*@
-@using X.PagedList.Mvc.Core;
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Posts>;
 @{
-	ViewData["Title"] = "Danh sách tin tức";
-	Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Bài viết";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 @section naviheader{
@@ -25,7 +23,7 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1>Quản lý tin</h1>
+					<h1>Quản lý @ViewData["Title"]</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
@@ -46,43 +44,28 @@
 				<h3 class="card-title">@ViewData["Title"]</h3>
 
 				<div class="card-tools">
-					<a href="/admin/news/add" class="btn btn-primary">Thêm mới</a>
+					<a href="/admin/posts/add" class="btn btn-primary">Thêm mới</a>
 					<a href="#" class="btn btn-danger" id="btnDeleteAll">Xóa</a>
 				</div>
 			</div>
 			<div class="card-body">
-				<div class="row">
-					<div class="col-6">
-						@using (Html.BeginForm("index", "news", FormMethod.Get, new { }))
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="SelectAll" /></th>
+							<th>STT</th>
+							<th>Hình ảnh</th>
+							<th>Tiêu đề</th>
+							<th>Ngày tạo</th>
+							<th>Hiển thị</th>
+							<th>Thứ tự</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (Model != null && Model.Any())
 					{
-						<div class="input-group input-group-sm">
-							@Html.TextBox("SearchText")
-							@*<input type="text" class="form-control">*@
-							<span class="input-group-append">
-								<button type="submit" class="btn btn-info btn-flat">Tìm kiếm</button>
-							</span>
-						</div>
-					}
-
-				</div>
-			</div>
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th><input type="checkbox" id="SelectAll" /></th>
-						<th>STT</th>
-						<th>Hình ảnh</th>
-						<th>Tiêu đề</th>
-						<th>Ngày tạo</th>
-						<th>Hiển thị</th>
-						<th style="width:150px;"></th>
-					</tr>
-				</thead>
-				<tbody>
-					@if (Model != null && Model.Any())
-					{
-						@*var i = 1;*@
-						var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+						var i = 1;
 						foreach (var item in Model)
 						{
 							var strCheck = item.IsActive ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
@@ -98,7 +81,7 @@
 									</a>
 								</td>
 								<td>
-									<a href="/admin/news/edit/@item.Id" class="btn btn-sm btn-primary">Sửa</a>
+									<a href="/admin/posts/edit/@item.Id" class="btn btn-sm btn-primary">Sửa</a>
 									<a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Xóa</a>
 								</td>
 							</tr>
@@ -115,7 +98,7 @@
 					}
 				</tbody>
 			</table>
-			@Html.PagedListPager(Model, page => Url.ActionLink("news", "admin", new {page}))
+
 		</div>
 		<!-- /.card-body -->
 		<div class="card-footer">
@@ -129,56 +112,56 @@
 @section scripts{
 	<script>
 		$(document).ready(function() {
-
-			$('body').on('click', '#btnDeleteAll', function(e) {
-				e.preventDefault();
-				var str = "";
-								/*debugger*/;
-				var checkbox = $(this).parents('.card').find('tr td input:checkbox');
-				var i = 0;
-				checkbox.each(function() {
-					if (this.checked) {
-						checkbox.attr('selected', 'checked');
-						var _id = $(this).val();
-						if (i === 0) {
+			
+            $('body').on('click', '#btnDeleteAll', function(e) {
+                e.preventDefault();
+                var str = "";
+                /*debugger*/;
+                var checkbox = $(this).parents('.card').find('tr td input:checkbox');
+                var i = 0;
+                checkbox.each(function() {
+                    if (this.checked) {
+                        checkbox.attr('selected', 'checked');
+                        var _id = $(this).val();
+                        if (i === 0) {
 							str += _id;
 						} else {
-							str += "," + _id;
+                            str += "," + _id;
 						}
-						i++;
-					} else {
-						checkbox.attr('selected', '');
+                        i++;
+                    } else {
+                        checkbox.attr('selected', '');
 					}
-				});
+                });
 				if (str.length > 0) {
-					var conf = confirm('Bạn có muốn xóa các bản ghi này không?');
-					if (conf === true) {
-						$.ajax({
-							url: '/admin/news/deleteAll',
+                    var conf = confirm('Bạn có muốn xóa các bản ghi này không?');
+                    if (conf === true) {
+                        $.ajax({
+							url: '/admin/posts/deleteAll',
 							type: 'POST',
-							data: { ids: str },
-							success: function(rs) {
-								if (rs.success) {
-									location.reload();
+                            data: {ids: str},
+                            success: function(rs) {
+                                if (rs.success) {
+                                    location.reload();
 								}
 							}
-						});
+                        });
 					}
 				}
-			});
+            });
 
-			$('body').on('change', '#SelectAll', function() {
+            $('body').on('change', '#SelectAll', function() {
 				var checkStatus = this.checked;
-				var checkbox = $(this).parents('.card-body').find('tr td input:checkbox');
-				checkbox.each(function() {
-					this.checked = checkStatus;
-					if (this.checked) {
-						checkbox.attr('selected', 'checked');
-					} else {
-						checkbox.attr('selected', '');
+                var checkbox = $(this).parents('.card-body').find('tr td input:checkbox');
+                checkbox.each(function() {
+                    this.checked = checkStatus;
+                    if (this.checked) {
+                        checkbox.attr('selected', 'checked');
+                    } else {
+                        checkbox.attr('selected', '');
 					}
-				});
-			});
+                });
+            });
 			$('body').on('click', '.btnDelete', function() {
 				var id = $(this).data("id");
 				//alert(id);
@@ -186,7 +169,7 @@
 				if (conf === true) {
 					//alert(id);
 					$.ajax({
-						url: '/admin/news/delete',
+						url: '/admin/posts/delete',
 						type: 'POST',
 						data: { id: id },
 						success: function(rs) {
@@ -199,19 +182,19 @@
 			});
 
 			$('body').on('click', '.btnActive', function() {
-				var btn = $(this);
+                var btn = $(this);
 				var id = $(this).data("id");
 				$.ajax({
-					url: '/admin/news/IsActive',
+					url: '/admin/posts/IsActive',
 					type: 'POST',
 					data: { id: id },
 					success: function(rs) {
 						if (rs.success) {
 							if (rs.isActive) {
 								//$(this).html("<i class='fa fa-check text-success'></i>");
-								btn.html("<i class='fa fa-check text-success'></i>");
+                                btn.html("<i class='fa fa-check text-success'></i>");
 							} else {
-								btn.html("<i class='fas fa-times text-danger'></i>");
+                                btn.html("<i class='fas fa-times text-danger'></i>");
 								//$(this).html("<i class='fas fa-times text-danger'></i>");
 							}
 						}
@@ -221,3 +204,4 @@
 		});
 	</script>
 }
+

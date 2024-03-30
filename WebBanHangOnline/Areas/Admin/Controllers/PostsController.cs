@@ -1,38 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using X.PagedList;
 using WebBanHangOnline.Data;
 using WebBanHangOnline.Models.EF;
 
 namespace WebBanHangOnline.Areas.Admin.Controllers
 {
-
     [Area("admin")]
-    [Route("admin/news")]
-    public class NewsController : Controller
+    [Route("admin/posts")]
+    public class PostsController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public NewsController(ApplicationDbContext db)
+        public PostsController(ApplicationDbContext db)
         {
             _db = db;
         }
-
-        public IActionResult Index(string SearchText, int? page)
+        public IActionResult Index()
         {
-            var pageSize = 5;
-            if (page == null)
-			{
-                page = 1;
-			}
-            IEnumerable<News> items = _db.News.OrderByDescending(x => x.Id);
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                items = items.Where(x => x.Alias.Contains(SearchText) || x.Title.Contains(SearchText));
-            }
-            var pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
-            items = items.ToPagedList(pageIndex, pageSize);
-            ViewBag.PageSize = pageSize;
-            ViewBag.Page = page;
+            var items = _db.Posts.ToList();
             return View(items);
         }
         [Route("add")]
@@ -44,7 +28,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         [Route("add")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(News model)
+        public IActionResult Add(Posts model)
         {
             if (ModelState.IsValid)
             {
@@ -52,7 +36,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
                 model.CategoryId = 5;
                 model.ModifiedDate = DateTime.Now;
                 model.Alias = WebBanHangOnline.Models.Filter.FilterChar(model.Title);
-                _db.News.Add(model);
+                _db.Posts.Add(model);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -63,37 +47,37 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var item = _db.News.Find(id);
+            var item = _db.Posts.Find(id);
             return View(item);
         }
         [Route("edit/{id}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(News model)
+        public IActionResult Edit(Posts model)
         {
             if (ModelState.IsValid)
             {
-                
+
                 model.ModifiedDate = DateTime.Now;
                 model.Alias = WebBanHangOnline.Models.Filter.FilterChar(model.Title);
-                _db.News.Attach(model);
+                _db.Posts.Attach(model);
                 _db.Entry(model).State = EntityState.Modified;
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(model);
         }
-		[Route("delete")]
-		[HttpPost]
+        [Route("delete")]
+        [HttpPost]
         public IActionResult Delete(int id)
-		{
-            var item = _db.News.Find(id);
+        {
+            var item = _db.Posts.Find(id);
             if (item != null)
-			{
-                _db.News.Remove(item);
+            {
+                _db.Posts.Remove(item);
                 _db.SaveChanges();
                 return Json(new { success = true });
-			}
+            }
             return Json(new { success = false });
 
         }
@@ -101,7 +85,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult IsActive(int id)
         {
-            var item = _db.News.Find(id);
+            var item = _db.Posts.Find(id);
             if (item != null)
             {
                 item.IsActive = !item.IsActive;
@@ -112,25 +96,26 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return Json(new { success = false });
 
         }
-		[Route("deleteAll")]
-		[HttpPost]
+        [Route("deleteAll")]
+        [HttpPost]
         public IActionResult DeleteAll(string ids)
-		{
-			if (!string.IsNullOrEmpty(ids))
-			{
+        {
+            if (!string.IsNullOrEmpty(ids))
+            {
                 var items = ids.Split(',');
-                if(items!=null && items.Any())
-				{
+                if (items != null && items.Any())
+                {
                     foreach (var item in items)
-					{
-                        var obj = _db.News.Find(Convert.ToInt32(item));
-                        _db.News.Remove(obj);
+                    {
+                        var obj = _db.Posts.Find(Convert.ToInt32(item));
+                        _db.Posts.Remove(obj);
                         _db.SaveChanges();
                     }
-				}
+                }
                 return Json(new { success = true });
             }
             return Json(new { success = false });
         }
+
     }
 }
