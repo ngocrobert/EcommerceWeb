@@ -67,8 +67,9 @@
 								<div class="custom-file">
 									@Html.TextBoxFor(x=>x.Image, new {@id="txtImage", @class="form-control"})
 								</div>
-								<div class="input-group-append">
+								<div class="input-group-append" id="editor">
 									<input type="button" value="Tải ảnh" onclick="BrowseSever('txtImage');"/>
+									
 								</div>
 							</div>
 						</div>
@@ -117,6 +118,7 @@
 </section>
 <!-- /.content -->
 @section scripts{
+	
 	<script>
 		$(document).ready(function() {
 			CKEDITOR.replace('txtDetail', {
@@ -131,5 +133,6 @@
 			};
 			finder.popup();
 		}
+
 	</script>
 }

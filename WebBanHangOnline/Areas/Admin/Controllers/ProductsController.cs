@@ -11,6 +11,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly string wwwrootDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Uploads");
         public ProductsController(ApplicationDbContext db)
         {
             _db = db;
@@ -30,6 +31,20 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
             return View(items);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(IFormFile myFile)
+        {
+            if(myFile != null)
+            {
+                var path = Path.Combine(wwwrootDir, DateTime.Now.ToString() + Path.GetExtension(myFile.FileName));
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await myFile.CopyToAsync(stream);
+                }
+                return RedirectToAction("Index");
+            }
+            return View();
         }
         [Route("add")]
         [HttpGet]
