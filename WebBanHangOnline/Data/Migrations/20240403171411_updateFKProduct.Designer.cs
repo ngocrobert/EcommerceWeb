@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebBanHangOnline.Data;
 
@@ -11,9 +12,10 @@ using WebBanHangOnline.Data;
 namespace WebBanHangOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240403171411_updateFKProduct")]
+    partial class updateFKProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -628,6 +630,7 @@ namespace WebBanHangOnline.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ProductCategoryId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("ProductCode")
@@ -875,7 +878,9 @@ namespace WebBanHangOnline.Data.Migrations
                 {
                     b.HasOne("WebBanHangOnline.Models.EF.ProductCategory", "ProductCategory")
                         .WithMany("Products")
-                        .HasForeignKey("ProductCategoryId");
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ProductCategory");
                 });

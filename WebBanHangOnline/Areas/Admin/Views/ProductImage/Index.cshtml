@@ -1,0 +1,128 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.ProductImage>
+@{
+	ViewData["Title"] = "Ảnh sản phẩm";
+	Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+<style>
+	.glImage {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+	}
+	.glImage li {
+		/*flex-direction: row */
+		display: inline-block;
+		position: relative;
+	}
+	.box-btn {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		text-align: center;
+	}
+</style>
+
+
+<!-- Main content -->
+<section class="content">
+
+	<!-- Default box -->
+	<div class="card">
+		<div class="card-header">
+			<h3 class="card-title">Ảnh sản phẩm</h3>
+
+			<div class="card-tools">
+				<button type="button" class="btn btn-danger" title="Collapse">
+					Xóa hết
+				</button>
+				@*<button type="button" class="btn btn-success" title="Remove">
+					Thêm ảnh
+				</button>*@
+				<div style="display: inline-block;">
+					<input type="file" id="iTaiAnh" name="myFile" class="btn btn-primary" style="display: none;" onchange="handleFileUpload(this.files)" />
+					<input type="button" id="btnTaiAnh" class="btn btn-primary" value="Tải ảnh" onclick="    LoadImage();" />
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<ul class="glImage">
+				@if (Model != null)
+				{
+					foreach (var item in Model)
+					{
+						<li id="trow_@item.Id">
+							<img src="@item.Image" width="200" />
+							<div class="box-btn">
+								<a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete"><i class="fa fa-trash"></i></a>
+								@if(@item.IsDefault)
+								{
+									<a href="#" data-id="@item.Id" class="btn btn-sm btn-success btnDefault"><i class="fa fa-check"></i></a>
+								} 
+								else
+								{
+									<a href="#" data-id="@item.Id" class="btn btn-sm btn-success btnDefault"><i class="fas fa-times"></i></a>
+								}
+							</div>
+						</li>
+					}
+				}
+			</ul>
+		</div>
+		<!-- /.card-body -->
+		<div class="card-footer">
+		</div>
+		<!-- /.card-footer-->
+	</div>
+	<!-- /.card -->
+
+</section>
+<!-- /.content -->
+
+<script>
+	function LoadImage() {
+		document.getElementById('iTaiAnh').click();
+	};
+	function handleFileUpload(files) {
+		if (files.length > 0) {
+			var file = files[0];
+			var filePath = "/Uploads/" + file.name;
+			//var filePath = URL.createObjectURL(file); // lấy đường dẫn tuyệt đối của image
+			//alert("Đường dẫn của tệp tin đã chọn: " + filePath);
+			AddImage(@ViewBag.productId,filePath);
+		}
+	}
+	function AddImage(id, url) {
+		$.ajax({
+			url: '/admin/productImage/addImage',
+			type: 'POST',
+			data: { productId: id, url: url },
+			success: function (rs) {
+				if (rs.success) {
+					window.location.reload();
+				}
+			}
+		});
+	}
+	$(document).ready(function() {
+		$('body').on('click', '.btnDelete', function() {
+			var id = $(this).data('id');
+			var conf = confirm('Bạn có muốn xóa ảnh này không?');
+			if (conf === true) {
+				$.ajax({
+					url: '/admin/productImage/delete',
+					type: 'POST',
+					data: { id: id },
+					success: function(rs) {
+						if (rs.success) {
+							$('#trow_' + id).remove();
+						}
+					}
+				});
+			}
+		});
+	});
+	
+</script>

@@ -1,6 +1,6 @@
 ﻿@model WebBanHangOnline.Models.EF.Product
 @{
-	ViewData["Title"] = "Thêm mới sản phẩm";
+	ViewData["Title"] = "Cập nhật sản phẩm";
 	Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -16,7 +16,7 @@
 			<a href="/admin/products" class="nav-link">Sản phẩm</a>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="#" class="nav-link">Thêm mới</a>
+			<a href="#" class="nav-link">Cập nhật</a>
 		</li>
 	</ul>
 }
@@ -26,12 +26,12 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1>Thêm mới Sản phẩm</h1>
+					<h1>Cập nhậtSản phẩm</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
 						<li class="breadcrumb-item"><a href="#">Sản phẩm</a></li>
-						<li class="breadcrumb-item active">Thêm mới</li>
+						<li class="breadcrumb-item active">Cập nhật</li>
 					</ol>
 				</div>
 			</div>
@@ -44,23 +44,25 @@
 		<!-- Default box -->
 		<div class="card">
 			<div class="card-header">
-				<h3 class="card-title">Thông tin Thêm mới Sản phẩm</h3>
+				<h3 class="card-title">Thông tin Sản phẩm</h3>
 
 
 			</div>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-12">
-						@using (Html.BeginForm("add", "products", FormMethod.Post, new { }))
+					@using (Html.BeginForm("edit", "products", FormMethod.Post, new { }))
 					{
 						@Html.AntiForgeryToken()
 						@Html.ValidationSummary(false)
+						@Html.HiddenFor(x=>x.Id)
+						@Html.HiddenFor(x=>x.CreatedDate)
 						<!-- your steps content here -->
 						<div class="card">
 							<div class="card-header p-2">
 								<ul class="nav nav-pills">
 									<li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Thông tin chung</a></li>
-									<li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Hình ảnh</a></li>
+									@*<li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Hình ảnh</a></li>*@
 									<li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">SEO</a></li>
 								</ul>
 							</div><!-- /.card-header -->
@@ -108,7 +110,7 @@
 											<div class="col-4">
 												<div class="form-group">
 													<label for="exampleInputEmail1">Giá</label>
-													<input type="text" name="demoPrice" id="demoPrice" value="0" class="form-control auto" data-a-dec="," data-a-sep=".">
+													<input type="text" name="demoPrice" id="demoPrice" value="@Model.Price" class="form-control auto" data-a-dec="," data-a-sep=".">
 													@Html.HiddenFor(x => x.Price, new {@placeholder="Giá"})
 													@Html.ValidationMessageFor(x => x.Price, null, new{@class="text-danger"})
 												</div>
@@ -116,7 +118,7 @@
 											<div class="col-4">
 												<div class="form-group">
 													<label for="exampleInputEmail1">Giá khuyến mại</label>
-													<input type="text" name="demoPriceSale" id="demoPriceSale" value="0" class="form-control auto" data-a-dec="," data-a-sep=".">
+													<input type="text" name="demoPriceSale" id="demoPriceSale" value="@Model.PriceSale" class="form-control auto" data-a-dec="," data-a-sep=".">
 													@Html.HiddenFor(x => x.PriceSale, new {@placeholder="Giá khuyến mại"})
 													@Html.ValidationMessageFor(x => x.PriceSale, null, new{@class="text-danger"})
 												</div>
@@ -150,49 +152,10 @@
 										</div>
 									</div>
 									<!-- /.tab-pane -->
-									<div class="tab-pane" id="timeline">
-										<!-- The timeline -->
-										<div class="col-md-12 text-right">
-											@using (Html.BeginForm("Index", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
-											{
-												<div>
-													<input type="file" id="iTaiAnh" name="myFile" class="btn btn-primary" style="display: none;" onchange="handleFileUpload(this.files)" />
-													<input type="button" id="btnTaiAnh" class="btn btn-primary" value="Tải ảnh" onclick="    LoadImage();" />
-												</div>
-											}
-										</div>
-										<div class="col-md-12">
-											<table class="table table-hover" id="tbAnhSP">
-												<thead>
-													<tr>
-														<th class="text-center">#</th>
-														<th class="text-center">Ảnh</th>
-														<th class="text-center">Ảnh đại diện</th>
-														<th class="text-center">Thao tác</th>
-													</tr>
-												</thead>
-												<tbody id="tbHtml">
-													@*<tr>
-												<td class="text-center">1</td>
-												<td class="text-center"><img width="80px" src="~/Uploads/chuongcho.jpg" /></td>
-												<td class="text-center"><input type="radio" name="rDefault" /></td>
-												<td class="text-center"><a href="#" class="btn btn-sm btn-danger">Xóa</a></td>
-												</tr>
-												<tr>
-												<td class="text-center">2</td>
-												<td class="text-center"><img width="80px" src="~/Uploads/chuongcho.jpg" /></td>
-												<td class="text-center"><input type="radio" name="rDefault" /></td>
-												<td class="text-center"><a href="#" class="btn btn-sm btn-danger">Xóa</a></td>
-												</tr>*@
-												</tbody>
-											</table>
-											<input type="hidden" id="tCurrentId" value="0" />
-										</div>
-									</div>
 									<!-- /.tab-pane -->
 
 									<div class="tab-pane" id="settings">
-										<form class="form-horizontal">
+										<div class="form-horizontal">
 											<div class="form-group row">
 												<label for="inputName" class="col-sm-2 col-form-label">SEO Title</label>
 												<div class="col-sm-10">
@@ -224,21 +187,18 @@
 													</div>
 												</div>
 											</div>
-											<div class="form-group row">
-												<div class="offset-sm-2 col-sm-10">
-													<button type="submit" class="btn btn-danger">Submit</button>
-												</div>
-											</div>
-										</form>
+										</div>
 									</div>
 									<!-- /.tab-pane -->
 								</div>
 								<!-- /.tab-content -->
 							</div><!-- /.card-body -->
 							<div class="form-group">
-								<button type="submit" class="btn btn-success">Thêm mới</button>
-							</div>
+								<a href="/admin/products" class="btn btn-danger">Quay lại</a>
+								<button type="submit" class="btn btn-success">Lưu</button>
 						</div>
+						</div>
+						
 
 					}
 				</div>
@@ -276,55 +236,6 @@
 
 
 		});
-		$(document).on('click', '.btnXoaAnh', function() {
-			var conf = confirm('Bạn có muốn xóa ảnh này không?');
-			if (conf === true) {
-				var _id = $(this).data('id');
-				//$('#trow_' + _id).remove();
-				$('#trow_' + _id).fadeTo('fast', 0.5, function() {
-					$(this).slideUp('fast', function() { $(this).remove(); });
-				});
-				var temp = $('#tCurrentId').val();
-				var currentId = parseInt(temp) - 1;
-				$('#tCurrentId').val(currentId);
-			}
-		});
-		function LoadImage() {
-			document.getElementById('iTaiAnh').click();
-		};
-		function handleFileUpload(files) {
-			if (files.length > 0) {
-				var file = files[0];
-				var filePath = "/Uploads/" + file.name;
-				//var filePath = URL.createObjectURL(file); // lấy đường dẫn tuyệt đối của image
-				//alert("Đường dẫn của tệp tin đã chọn: " + filePath);
-				addImageProduct(filePath);
-			}
-		}
-		function addImageProduct(url) {
-			var temp = $('#tCurrentId').val();
-			var currentId = parseInt(temp) + 1;
-			var str = "";
-			if (currentId == 1) {
-				str += `<tr id="trow_${currentId}">
-								<td class="text-center">${currentId}</td>
-								<td class="text-center"><img width="80px" src="${url}" /><input type="hidden" value="${url}" name="Images" /></td>
-								<td class="text-center"><input type="radio" value=${currentId} name="rDefault" checked="checked" /></td>
-								<td class="text-center"><a href="#" data-id="${currentId}" class="btn btn-sm btn-danger btnXoaAnh">Xóa</a></td>
-							</tr>`;
-			}
-			else {
-				str += `<tr id="trow_${currentId}">
-								<td class="text-center">${currentId}</td>
-								<td class="text-center"><img width="80px" src="${url}" /><input type="hidden" value="${url}" name="Images" /></td>
-								<td class="text-center"><input type="radio" value=${currentId} name="rDefault" /></td>
-								<td class="text-center"><a href="#" data-id="${currentId}" class="btn btn-sm btn-danger btnXoaAnh">Xóa</a></td>
-							</tr>`;
-			}
-			$('#tbHtml').append(str);
-			$('#tCurrentId').val(currentId);
-			
-
-		}
+		
 	</script>
 }
