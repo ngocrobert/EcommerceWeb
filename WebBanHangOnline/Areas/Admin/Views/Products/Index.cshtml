@@ -1,8 +1,8 @@
 ﻿@model X.PagedList.PagedList<WebBanHangOnline.Models.EF.Product>
 @using X.PagedList.Mvc.Core;
 @{
-    ViewData["Title"] = "Danh sách sản phẩm";
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+	ViewData["Title"] = "Danh sách sản phẩm";
+	Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 @section naviheader{
@@ -18,7 +18,7 @@
 		</li>
 	</ul>
 }
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<div class="container-fluid">
@@ -51,19 +51,19 @@
 			</div>
 			<div class="card-body">
 				@*<div class="row">
-					<div class="col-6">
-						@using (Html.BeginForm("index", "products", FormMethod.Get, new { }))
-					{
-						<div class="input-group input-group-sm">
-							@Html.TextBox("SearchText")
-							
-							<span class="input-group-append">
-								<button type="submit" class="btn btn-info btn-flat">Tìm kiếm</button>
-							</span>
-						</div>
-					}
+			<div class="col-6">
+			@using (Html.BeginForm("index", "products", FormMethod.Get, new { }))
+			{
+			<div class="input-group input-group-sm">
+			@Html.TextBox("SearchText")
 
-				</div>*@
+			<span class="input-group-append">
+			<button type="submit" class="btn btn-info btn-flat">Tìm kiếm</button>
+			</span>
+			</div>
+			}
+
+			</div>*@
 			</div>
 			<table class="table table-hover">
 				<thead>
@@ -76,59 +76,74 @@
 						<th>Số lượng</th>
 						<th>Gía</th>
 						<th>Ngày tạo</th>
+						<th>Home</th>
+						<th>Sale</th>
 						<th>Hiển thị</th>
-						<th style="width:150px;"></th>
+						<th style="width:120px;"></th>
 					</tr>
 				</thead>
 				<tbody>
 					@if (Model != null && Model.Any())
+				{
+					@*var i = 1;*@
+					var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+					foreach (var item in Model)
 					{
-						@*var i = 1;*@
-						var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
-						foreach (var item in Model)
-						{
-							var strCheck = item.IsActive ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
-							<tr id="trow_@item.Id">
-								<td><input type="checkbox" class="cbkItem" value="@item.Id" /></td>
-								<td>@i</td>
-								@*<td><img src="@item.ProductImage.FirstOrDefault(x=>x.IsDefault).Image" width="50" /></td>*@
-								@*<td><img src="" id="productImage_@item.Id" data-product-id="@item.Id" width="50" /></td>*@
-								<td><img class="imgproduct" src="@item.Image" data-id="@item.Id" width="50"/></td>
-								<td>@item.Title</td>
-								<td>@item.ProductCategory.Title</td>
-								<td>@item.Quantity</td>
-								<td>@item.Price</td>
-								<td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
-								<td class="text-center">
-									<a href="#" data-id="@item.Id" class="btnActive">
-										@Html.Raw(strCheck)
-									</a>
-								</td>
-								<td>
-									<a href="/admin/products/edit/@item.Id" class="btn btn-sm btn-primary">Sửa</a>
-									<a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Xóa</a>
-								</td>
-							</tr>
-							i++;
-							
-						}
+						var strCheck = item.IsActive ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
+						var strCheckHome = item.IsHome ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
+						var strCheckSale = item.IsSale ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
 
-					}
-					else
-					{
-						<tr>
-							<td colspan="4">Không có bản ghi nào!!!</td>
-
+						<tr id="trow_@item.Id">
+							<td><input type="checkbox" class="cbkItem" value="@item.Id" /></td>
+							<td>@i</td>
+							@*<td><img src="@item.ProductImage.FirstOrDefault(x=>x.IsDefault).Image" width="50" /></td>*@
+							@*<td><img src="" id="productImage_@item.Id" data-product-id="@item.Id" width="50" /></td>*@
+							<td><img class="imgproduct" src="@item.Image" data-id="@item.Id" width="50" /></td>
+							<td>@item.Title</td>
+							<td>@item.ProductCategory.Title</td>
+							<td>@item.Quantity</td>
+							<td>@item.Price</td>
+							<td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+							<td class="text-center">
+								<a href="#" data-id="@item.Id" class="btnHome">
+									@Html.Raw(strCheckHome)
+								</a>
+							</td>
+							<td class="text-center">
+								<a href="#" data-id="@item.Id" class="btnSale">
+									@Html.Raw(strCheckSale)
+								</a>
+							</td>
+							<td class="text-center">
+								<a href="#" data-id="@item.Id" class="btnActive">
+									@Html.Raw(strCheck)
+								</a>
+							</td>
+							<td>
+								<a href="/admin/products/edit/@item.Id" class="btn btn-sm btn-primary">Sửa</a>
+								<a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Xóa</a>
+							</td>
 						</tr>
+						i++;
+
 					}
-				</tbody>
-			</table>
-			@Html.PagedListPager(Model, page => Url.ActionLink("products", "admin", new {page}))
-		</div>
-		<!-- /.card-body -->
-		<div class="card-footer">
-		</div>
-		<!-- /.card-footer-->
+
+				}
+				else
+				{
+					<tr>
+						<td colspan="4">Không có bản ghi nào!!!</td>
+
+					</tr>
+				}
+			</tbody>
+		</table>
+		@Html.PagedListPager(Model, page => Url.ActionLink("products", "admin", new {page}))
+	</div>
+	<!-- /.card-body -->
+	<div class="card-footer">
+	</div>
+	<!-- /.card-footer-->
 	</div>
 	<!-- /.card -->
 
@@ -143,26 +158,26 @@
 	<script>
 		$(document).ready(function() {
 			//hiển thị form upload ảnh
-            $("#dialog").dialog({
-                autoOpen: false,
-                show: "fade",
-                hide: "fade",
-                modal: true,
-                height: '600',
-                width: '700',
-                resizable: true,
-                title: 'Quản lý ảnh sản phẩm',
-                close: function() {
-                    window.location.reload();
-                }
-            });
-            $('body').on("click", ".imgproduct", function() {
-                var proid = $(this).attr("data-id");
-                //alert("/admin/productImage/Index?id=" + proid);
-                $("#dialog #myIframe").attr("src", "/admin/productImage/Index/" + proid);
-                $("#dialog").dialog('open');
-                return false;
-            });
+			$("#dialog").dialog({
+				autoOpen: false,
+				show: "fade",
+				hide: "fade",
+				modal: true,
+				height: '600',
+				width: '700',
+				resizable: true,
+				title: 'Quản lý ảnh sản phẩm',
+				close: function() {
+					window.location.reload();
+				}
+			});
+			$('body').on("click", ".imgproduct", function() {
+				var proid = $(this).attr("data-id");
+				//alert("/admin/productImage/Index?id=" + proid);
+				$("#dialog #myIframe").attr("src", "/admin/productImage/Index/" + proid);
+				$("#dialog").dialog('open');
+				return false;
+			});
 
 
 
@@ -170,7 +185,7 @@
 			$('body').on('click', '#btnDeleteAll', function(e) {
 				e.preventDefault();
 				var str = ""; // lưu các id. vd: 3,4
-								/*debugger*/;
+										/*debugger*/;
 				var checkbox = $(this).parents('.card').find('tr td input:checkbox'); // tìm tất cả các checkbox
 				var i = 0;
 				checkbox.each(function() {
@@ -239,12 +254,54 @@
 				var btn = $(this);
 				var id = $(this).data("id"); //lấy giá trị thuộc tính data-id
 				$.ajax({
-					url: '/admin/news/IsActive',
+					url: '/admin/products/IsActive',
 					type: 'POST',
 					data: { id: id },
 					success: function(rs) {
 						if (rs.success) {
 							if (rs.isActive) {
+								//$(this).html("<i class='fa fa-check text-success'></i>");
+								btn.html("<i class='fa fa-check text-success'></i>");
+							} else {
+								btn.html("<i class='fas fa-times text-danger'></i>");
+								//$(this).html("<i class='fas fa-times text-danger'></i>");
+							}
+						}
+					}
+				});
+			});
+			// xử lý sự kiện khi nhấn nút chuyển trạng thái
+			$('body').on('click', '.btnHome', function() {
+				var btn = $(this);
+				var id = $(this).data("id"); //lấy giá trị thuộc tính data-id
+				$.ajax({
+					url: '/admin/products/IsHome',
+					type: 'POST',
+					data: { id: id },
+					success: function(rs) {
+						if (rs.success) {
+							if (rs.isHome) {
+								//$(this).html("<i class='fa fa-check text-success'></i>");
+								btn.html("<i class='fa fa-check text-success'></i>");
+							} else {
+								btn.html("<i class='fas fa-times text-danger'></i>");
+								//$(this).html("<i class='fas fa-times text-danger'></i>");
+							}
+						}
+					}
+				});
+			});
+			// xử lý sự kiện khi nhấn nút chuyển trạng thái
+			$('body').on('click', '.btnSale', function() {
+				var btn = $(this);
+				var id = $(this).data("id"); //lấy giá trị thuộc tính data-id
+				$.ajax({
+					url: '/admin/products/IsSale',
+					type: 'POST',
+					data: { id: id },
+					success: function(rs) {
+						if (rs.success) {
+							if (rs.isSale) {
 								//$(this).html("<i class='fa fa-check text-success'></i>");
 								btn.html("<i class='fa fa-check text-success'></i>");
 							} else {
@@ -268,5 +325,5 @@
 
 		});
 	</script>
-	
+
 }

@@ -160,5 +160,55 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return Json(new { success = false });
 
         }
+        /// <summary>
+        /// Chỉnh sửa trạng thái tin tức
+        /// </summary>
+        /// <param name="id">Id tin tức</param>
+        /// <returns>1 đối tượng JSON</returns>
+        [Route("IsActive")]
+        [HttpPost]
+        public IActionResult IsActive(int id)
+        {
+            var item = _db.Products.Find(id);
+            if (item != null)
+            {
+                item.IsActive = !item.IsActive;
+                _db.Entry(item).State = EntityState.Modified;
+                _db.SaveChanges();
+                return Json(new { success = true, isActive = item.IsActive });
+            }
+            return Json(new { success = false });
+
+        }
+        [Route("IsHome")]
+        [HttpPost]
+        public IActionResult IsHome(int id)
+        {
+            var item = _db.Products.Find(id);
+            if (item != null)
+            {
+                item.IsHome = !item.IsHome;
+                _db.Entry(item).State = EntityState.Modified;
+                _db.SaveChanges();
+                return Json(new { success = true, isHome = item.IsHome });
+            }
+            return Json(new { success = false });
+
+        }
+        [Route("IsSale")]
+        [HttpPost]
+        public IActionResult IsSale(int id)
+        {
+            var item = _db.Products.Find(id);
+            if (item != null)
+            {
+                item.IsSale = !item.IsSale;
+                _db.Entry(item).State = EntityState.Modified;
+                _db.SaveChanges();
+                return Json(new { success = true, isSale = item.IsSale });
+            }
+            return Json(new { success = false });
+
+        }
     }
 }
