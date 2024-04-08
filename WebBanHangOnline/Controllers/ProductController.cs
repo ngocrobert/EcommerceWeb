@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebBanHangOnline.Data;
 
 namespace WebBanHangOnline.Controllers
@@ -10,9 +11,29 @@ namespace WebBanHangOnline.Controllers
         {
             _db = db;
         }
-        public IActionResult Index()
+        public IActionResult Index(int? id)
         {
-            return View();
+            var items = _db.Products.Include(p => p.ProductCategory).ToList();
+            if(id != null)
+			{
+                items = items.Where(x => x.Id == id).ToList();
+			}
+            return View(items);
+        }
+        public IActionResult ProductCategory(string alias, int id)
+        {
+            var items = _db.Products.Include(p => p.ProductCategory).ToList();
+            if (id > 0)
+            {
+                items = items.Where(x => x.ProductCategoryId == id).ToList();
+            }
+            var cate = _db.ProductCategories.Find(id);
+            if(cate!=null)
+			{
+                ViewBag.CateName = cate.Title;
+			}
+            ViewBag.CateId = id;
+            return View(items);
         }
 
         public IActionResult Partial_ItemsByCateId()

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Web.Mvc;
 using WebBanHangOnline.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,19 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "Contact",
+    pattern: "lien-he",
+    defaults: new { controller = "Contact", action = "Index" });
+app.MapControllerRoute(
+    name: "Products",
+    pattern: "san-pham",
+    defaults: new { controller = "Product", action = "Index" });
+
+app.MapControllerRoute(
+    name: "CategoryProduct",
+    pattern: "danh-muc-san-pham/{alias}-{id}",
+    defaults: new { controller = "Product", action = "ProductCategory", id = UrlParameter.Optional });
 app.MapRazorPages();
 
 app.Run();
