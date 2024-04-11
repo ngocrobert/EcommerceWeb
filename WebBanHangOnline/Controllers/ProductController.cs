@@ -13,8 +13,9 @@ namespace WebBanHangOnline.Controllers
         }
         public IActionResult Index(int? id)
         {
-            var items = _db.Products.Include(p => p.ProductCategory).ToList();
-            if(id != null)
+            //var items = _db.Products.Include(p => p.ProductCategory).ToList();
+            var items = _db.Products.ToList();
+            if (id != null)
 			{
                 items = items.Where(x => x.Id == id).ToList();
 			}
@@ -22,7 +23,8 @@ namespace WebBanHangOnline.Controllers
         }
         public IActionResult ProductCategory(string alias, int id)
         {
-            var items = _db.Products.Include(p => p.ProductCategory).ToList();
+            //var items = _db.Products.Include(p => p.ProductCategory).ToList();
+            var items = _db.Products.ToList();
             if (id > 0)
             {
                 items = items.Where(x => x.ProductCategoryId == id).ToList();
@@ -46,6 +48,14 @@ namespace WebBanHangOnline.Controllers
             var items = _db.Products.Where(x => x.IsSale && x.IsActive).Take(10).ToList();
             return PartialView("Partial_ProductSale", items);
         }
-
+        [Route("chi-tiet/{alias}-p{id}")]
+        public IActionResult DetailProduct(string alias, int id)
+        {
+            var item = _db.Products.Find(id);
+            //var item = _db.Products.Include(p => p.ProductCategory).Where(x => x.Id == id);
+            item.ProductCategory = _db.ProductCategories.Find(item.ProductCategoryId);
+            item.ProductImage = _db.ProductImages.Where(x => x.ProductId == id).ToList();
+            return View(item);
+        }
     }
 }
