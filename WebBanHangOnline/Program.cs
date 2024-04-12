@@ -61,6 +61,11 @@ app.MapControllerRoute(
     name: "ShoppingCart",
     pattern: "gio-hang",
     defaults: new { controller = "ShoppingCart", action = "Index" });
+app.MapControllerRoute(
+    name: "CheckOut",
+    pattern: "thanh-toan",
+    defaults: new { controller = "ShoppingCart", action = "CheckOut" });
+
 //app.MapControllerRoute(
 //    name: "DetailProducts",
 //    pattern: "chi-tiet/{alias}-p{id}.html",

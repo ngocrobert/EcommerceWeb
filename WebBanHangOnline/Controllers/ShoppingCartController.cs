@@ -16,15 +16,33 @@ namespace WebBanHangOnline.Controllers
 
         public IActionResult Index()
         {
+            //ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+            //if (cart != null)
+            //{
+            //    return View(cart.Items);
+            //}
+            return View();
+        }
+        public IActionResult CheckOut()
+        {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
             if (cart != null)
             {
-                return View(cart.Items);
+                ViewBag.CheckCart = cart;
             }
             return View();
         }
         [HttpGet]
-
+        public IActionResult Partial_Item_ThanhToan()
+        {
+            ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+            if (cart != null)
+            {
+                return PartialView("Partial_Item_ThanhToan", cart.Items);
+            }
+            return PartialView("Partial_Item_ThanhToan");
+        }
+        [HttpGet]
         public IActionResult ShowCount()
         {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
@@ -77,7 +95,30 @@ namespace WebBanHangOnline.Controllers
 
             return Json(code);
         }
-        
+        [HttpGet]
+        public IActionResult Partial_Item_Cart()
+        {
+            ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+            if (cart != null)
+            {
+                return PartialView("Partial_Item_Cart", cart.Items);
+            }
+            return PartialView("Partial_Item_Cart");
+        }
+        [HttpPost]
+        public IActionResult Update(int id, int quantity)
+        {
+
+            ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+            if (cart != null)
+            {
+                cart.UpdateQuantity(id, quantity);
+                HttpContext.Session.Set("Cart", cart);
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -96,6 +137,20 @@ namespace WebBanHangOnline.Controllers
             }
 
             return Json(code);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteAll()
+        {
+
+            ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+            if (cart != null)
+            {
+                cart.ClearCart();
+                HttpContext.Session.Set("Cart", cart);
+                return Json(new {success = true});
+            }
+            return Json(new { success = false });
         }
     }
 }

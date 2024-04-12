@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebBanHangOnline.Models.ShoppingCartItem>
+﻿@*@model IEnumerable<WebBanHangOnline.Models.ShoppingCartItem>*@
 @using WebBanHangOnline.Common
 @{
 	ViewData["Title"] = "Gio hàng";
@@ -23,56 +23,15 @@
 			<!-- Sidebar -->
 			<!-- Main Content -->
 			<div class="row">
+				<div class="col-md-12" id="load_data">
+					@await Component.InvokeAsync("Partial_Item_Cart")
+
+				</div>
 				<div class="col-md-12">
-					<table class="table">
-						<tr>
-							<th>STT</th>
-							<th>Ảnh sản phẩm</th>
-							<th>Tên sản phẩm</th>
-							<th>Danh mục</th>
-							<th>Gía</th>
-							<th>Số lượng</th>
-							<th>Thành tiền</th>
-							<th>
-								
-							</th>
-
-						</tr>
-						@if (Model != null && Model.Any())
-						{
-							var i = 0;
-							var tongtien = decimal.Zero;
-							foreach (var item in Model)
-							{
-								tongtien += item.TotalPrice;
-								<tr class="text-center" id="trow_@item.ProductId">
-									<td>@(i+1)</td>
-									<td><img src="@item.ProductImg" width="60" /></td>
-									<td><a href="/chi-tiet/@item.Alias-p@(item.ProductId)">@item.ProductName</a></td>
-									<td>@item.CategoryName</td>
-									<td>@Common.FormatNumber(item.Price)</td>
-									<td>@item.Quantity</td>
-									<th>@Common.FormatNumber(item.TotalPrice)</th>
-									<td>
-										<a href="#" data-id="@item.ProductId" class="btn btn-sm btn-danger btnDelete">Xóa</a>
-									</td>
-								</tr>
-								i++;
-							}
-							<tr>
-								<th colspan="6" class="text-right">Tổng: </th>
-								<th class="text-center">@Common.FormatNumber(tongtien,0)</th>
-								<td></td>
-							</tr>
-						}
-						else
-						{
-							<tr class="text-center">
-								<th colspan="7">Không có sản phẩm trong giỏ hàng</th>
-							</tr>
-						}
-					</table>
-
+					<div class="text-right">
+						<a href="#" class="btn btn-danger btnDeleteAll">Xóa</a>
+						<a href="/thanh-toan" class="btn btn-success">Thanh toán</a>
+					</div>
 				</div>
 			</div>
 
@@ -83,5 +42,6 @@
 
 @section scripts
 	{
+	
 	<script src="~/assets/js/categories_price.js"></script>
 }
