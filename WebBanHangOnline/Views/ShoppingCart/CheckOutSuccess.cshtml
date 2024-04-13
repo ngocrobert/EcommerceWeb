@@ -1,9 +1,7 @@
 ﻿
-
 @{
-	ViewData["Title"] = "Thanh toán";
+    ViewData["Title"] = "Đặt hàng thành công";
 }
-
 
 <link rel="stylesheet" type="text/css" href="~/assets/styles/categories_styles.css">
 <link rel="stylesheet" type="text/css" href="~/assets/styles/categories_responsive.css">
@@ -24,35 +22,13 @@
 			<!-- Sidebar -->
 			<!-- Main Content -->
 			<div class="row">
-				<div class="col-md-12 text-center">
-					<h1>Thanh toán</h1>
-					<p>Bạn hãy kiểm tra lại thông tin đơn hàng cho chính xác!</p>
+				<div class="col-md-12" id="load_data">
+					<h2>Bạn đã mua hàng thành công!</h2>
 
 				</div>
-
-
+				
 			</div>
-			<hr />
-			@if (ViewBag.CheckCart != null)
-			{
-				<div class="row">
-					@await Component.InvokeAsync("Partial_CheckOut")
-					<div class="col-md-3">
-						@await Component.InvokeAsync("Partial_Item_ThanhToan")
-
-					</div>
-
-				</div>
-			}
-			else
-			{
-				<div>Bạn chưa có sản phẩm nào. Vui lòng quay lại trang <a href="/san-pham">sản phẩm</a>  để mua hàng!</div>
-			}
-
 
 		</div>
 	</div>
 </div>
-
-					
-

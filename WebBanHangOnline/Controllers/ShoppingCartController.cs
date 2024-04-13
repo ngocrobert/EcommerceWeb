@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebBanHangOnline.Data;
 using WebBanHangOnline.Extensions;
 using WebBanHangOnline.Models;
+using WebBanHangOnline.Models.EF;
 
 namespace WebBanHangOnline.Controllers
 {
@@ -21,22 +22,75 @@ namespace WebBanHangOnline.Controllers
             //{
             //    return View(cart.Items);
             //}
-            return View();
-        }
-        public IActionResult CheckOut()
-        {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
-            if (cart != null)
+            if (cart != null && cart.Items.Any())
             {
                 ViewBag.CheckCart = cart;
             }
             return View();
         }
         [HttpGet]
+        public IActionResult CheckOut()
+        {
+            ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+            if (cart != null && cart.Items.Any())
+            {
+                ViewBag.CheckCart = cart;
+            }
+            return View();
+        }
+        [HttpGet]
+        public IActionResult CheckOutSuccess()
+        {
+            
+            return View();
+        }
+        public IActionResult Partial_CheckOut()
+        {
+            return PartialView("Partial_CheckOut");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CheckOut(OrderViewModel req)
+        {
+            var code = new { success = false, code = -1 };
+            if(ModelState.IsValid)
+            {
+                ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+                if (cart != null)
+                {
+                    Order order = new Order();
+                    order.CustomerName = req.CustomerName;
+                    order.Phone = req.Phone;
+                    order.Address = req.Address;
+                    cart.Items.ForEach(x => order.OrderDetails.Add(new OrderDetail
+                    {
+                        ProductId = x.ProductId,
+                        Quantity = x.Quantity,
+                        Price = x.Price
+                    }));
+                    order.TotalAmount = cart.Items.Sum(x=>(x.Price * x.Quantity));
+                    order.TypePayment = req.TypePayment;
+                    order.CreatedDate = DateTime.Now;
+                    order.CreatedBy = req.Phone;
+                    order.ModifiedDate = DateTime.Now; 
+                    Random rd = new Random();
+                    order.Code = "DH" + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9);
+                    _db.Orders.Add(order);
+                    _db.SaveChanges();
+                    cart.ClearCart();
+                    HttpContext.Session.Set("Cart", cart);
+                    return RedirectToAction("CheckOutSuccess");
+                }
+
+            }
+            return Json(code);
+        }
+        [HttpGet]
         public IActionResult Partial_Item_ThanhToan()
         {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
-            if (cart != null)
+            if (cart != null && cart.Items.Any())
             {
                 return PartialView("Partial_Item_ThanhToan", cart.Items);
             }
@@ -99,7 +153,7 @@ namespace WebBanHangOnline.Controllers
         public IActionResult Partial_Item_Cart()
         {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
-            if (cart != null)
+            if (cart != null && cart.Items.Any())
             {
                 return PartialView("Partial_Item_Cart", cart.Items);
             }
