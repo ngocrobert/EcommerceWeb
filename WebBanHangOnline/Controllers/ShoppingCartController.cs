@@ -1,18 +1,25 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Net.Mail;
 using WebBanHangOnline.Data;
 using WebBanHangOnline.Extensions;
 using WebBanHangOnline.Models;
 using WebBanHangOnline.Models.EF;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebBanHangOnline.Controllers
 {
     public class ShoppingCartController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public ShoppingCartController(ApplicationDbContext db)
+        private IHostingEnvironment Environment { get; set; }
+        public IConfiguration Configuration { get; set; }
+        public ShoppingCartController(ApplicationDbContext db, IConfiguration _configuration, IHostingEnvironment environment)
         {
             _db = db;
+            Configuration = _configuration;
+            Environment = environment;
         }
 
         public IActionResult Index()
@@ -63,6 +70,7 @@ namespace WebBanHangOnline.Controllers
                     order.CustomerName = req.CustomerName;
                     order.Phone = req.Phone;
                     order.Address = req.Address;
+                    order.Email = req.Email;
                     cart.Items.ForEach(x => order.OrderDetails.Add(new OrderDetail
                     {
                         ProductId = x.ProductId,
@@ -78,6 +86,28 @@ namespace WebBanHangOnline.Controllers
                     order.Code = "DH" + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9);
                     _db.Orders.Add(order);
                     _db.SaveChanges();
+
+                    // send mail cho khach hang
+                    var strSanPham = "";
+                    var thanhtien = decimal.Zero;
+                    var TongTien = decimal.Zero;
+                    foreach(var sp in cart.Items)
+                    {
+                        strSanPham += "<tr>";
+                        strSanPham += "<td>"+sp.ProductName+"</td>";
+                        strSanPham += "<td>" + sp.Quantity + "</td>";
+                        strSanPham += "<td>" + WebBanHangOnline.Common.Common.FormatNumber(sp.TotalPrice) + "</td>";
+                        strSanPham += "</tr>";
+                        thanhtien += sp.Price * sp.Quantity;
+                    }
+                    TongTien = thanhtien;
+                    string body = this.ContentBody(order.Code, strSanPham,  order.CustomerName, order.Phone,order.Address,  req.Email, thanhtien, TongTien, "templates//send2.html");
+                    this.SendHtmlFormattedEmail(req.Email, "Đơn hàng #"+order.Code, body.ToString());
+                    //send email admin
+                    string bodyAdmin = this.ContentBody(order.Code, strSanPham, order.CustomerName, order.Phone, order.Address, req.Email, thanhtien, TongTien, "templates//send1.html");
+                    string emailAdmin = this.Configuration.GetValue<string>("Smtp:EmailAdmin");
+                    this.SendHtmlFormattedEmail(emailAdmin, "Đơn hàng #" + order.Code, bodyAdmin.ToString());
+
                     cart.ClearCart();
                     HttpContext.Session.Set("Cart", cart);
                     return RedirectToAction("CheckOutSuccess");
@@ -86,6 +116,55 @@ namespace WebBanHangOnline.Controllers
             }
             return Json(code);
         }
+
+        private string ContentBody(string maDon, string sanPham, string tenKhach, string phone, string diachi, string email, decimal thanhtien, decimal tongtien, string template)
+        {
+            string body = string.Empty;
+            string path = Path.Combine(this.Environment.WebRootPath, template);
+            using (StreamReader reader = new StreamReader(path))
+            {
+                body = reader.ReadToEnd();
+            }
+            body = body.Replace("{{MaDon}}", maDon);
+            body = body.Replace("{{SanPham}}", sanPham);
+            body = body.Replace("{{TenKhachHang}}", tenKhach);
+            body = body.Replace("{{Phone}}", phone);
+            body = body.Replace("{{DiaChiNhan}}", diachi);
+            body = body.Replace("{{Email}}", email);
+            body = body.Replace("{{NgayDat}}", DateTime.Now.ToString("dd/MM/yyyy"));
+            body = body.Replace("{{ThanhTien}}", WebBanHangOnline.Common.Common.FormatNumber(thanhtien,0));
+
+            body = body.Replace("{{TongTien}}", WebBanHangOnline.Common.Common.FormatNumber(tongtien, 0));
+            return body;
+
+        }
+        private void SendHtmlFormattedEmail(string recepEmail, string subject, string body)
+        {
+            string host = this.Configuration.GetValue<string>("Smtp:Server");
+            int port = this.Configuration.GetValue<int>("Smtp:Port");
+            string fromAddress = this.Configuration.GetValue<string>("Smtp:FromAddress");
+            string userName = this.Configuration.GetValue<string>("Smtp:Username");
+            string password = this.Configuration.GetValue<string>("Smtp:Password");
+            using (MailMessage mm = new MailMessage(fromAddress, recepEmail))
+            {
+                MailAddress fromEmail = new MailAddress(fromAddress, "ShopOnline");
+                mm.From = fromEmail;
+                mm.Subject = subject;
+                mm.Body = body;
+                mm.IsBodyHtml = true;
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Host = host;
+                    smtp.EnableSsl = true;
+                    NetworkCredential networkCred = new NetworkCredential(userName, password);
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = networkCred;
+                    smtp.Port = port;
+                    smtp.Send(mm);
+                }
+            }
+        }
+
         [HttpGet]
         public IActionResult Partial_Item_ThanhToan()
         {

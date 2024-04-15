@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
 using System.Net;
 
+
 namespace WebBanHangOnline.Common
 {
     public class Common
@@ -9,12 +10,21 @@ namespace WebBanHangOnline.Common
 
         //private static string password = ConfigurationManager.AppSettings["PasswordEmail"];
         //private static string Email = ConfigurationManager.AppSettings["Email"];
+        //private readonly IConfiguration _configuration;
+
+        //public Common(IConfiguration configuration)
+        //{
+        //    _configuration = configuration;
+        //}
         //public static bool SendMail(string name, string subject, string content,
-        //    string toMail)
+        //    string toMail, IConfiguration _configuration)
         //{
         //    bool rs = false;
         //    try
         //    {
+        //        string password = _configuration["AppSettings:PasswordEmail"];
+        //        string Email = _configuration["AppSettings:Email"];
+
         //        MailMessage message = new MailMessage();
         //        var smtp = new SmtpClient();
         //        {
@@ -46,6 +56,10 @@ namespace WebBanHangOnline.Common
         //    }
         //    return rs;
         //}
+
+        //private IHostingEnvironment Environment { get; set; }
+        //public IConfiguration Configuration { get; set; }
+
         public static string FormatNumber(object value, int SoSauDauPhay = 2)
         {
             bool isNumber = IsNumeric(value);

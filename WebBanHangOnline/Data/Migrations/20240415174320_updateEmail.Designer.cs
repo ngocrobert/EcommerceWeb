@@ -12,8 +12,8 @@ using WebBanHangOnline.Data;
 namespace WebBanHangOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240403171411_updateFKProduct")]
-    partial class updateFKProduct
+    [Migration("20240415174320_updateEmail")]
+    partial class updateEmail
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -460,6 +460,10 @@ namespace WebBanHangOnline.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -475,6 +479,9 @@ namespace WebBanHangOnline.Data.Migrations
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TypePayment")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -608,7 +615,7 @@ namespace WebBanHangOnline.Data.Migrations
                     b.Property<bool>("IsFeacture")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsHome")
+                    b.Property<bool>("IsHome")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsHot")
@@ -630,7 +637,6 @@ namespace WebBanHangOnline.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ProductCategoryId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("ProductCode")
@@ -878,9 +884,7 @@ namespace WebBanHangOnline.Data.Migrations
                 {
                     b.HasOne("WebBanHangOnline.Models.EF.ProductCategory", "ProductCategory")
                         .WithMany("Products")
-                        .HasForeignKey("ProductCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductCategoryId");
 
                     b.Navigation("ProductCategory");
                 });
