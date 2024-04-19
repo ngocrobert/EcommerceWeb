@@ -4,11 +4,13 @@ using X.PagedList;
 using WebBanHangOnline.Models.EF;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebBanHangOnline.Areas.Admin.Controllers
 {
     [Area("admin")]
     [Route("admin/products")]
+    [Authorize(Roles = "Admin, Employee")]
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _db;

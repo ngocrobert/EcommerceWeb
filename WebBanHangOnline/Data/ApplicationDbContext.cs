@@ -1,13 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebBanHangOnline.Models.EF;
 
 namespace WebBanHangOnline.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+	public class ApplicationUser : IdentityUser
+	{
+		public string FullName { get; set; }
+	}
+
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public string FullName { get; set; }
-        public string Phone { get; set; }
+        //public string FullName { get; set; }
+        //public string Phone { get; set; }
        
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

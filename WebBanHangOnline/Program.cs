@@ -12,9 +12,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>{ options.SignIn.RequireConfirmedAccount =true;}).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => { options.SignIn.RequireConfirmedAccount = false;}).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+
 builder.Services.AddControllersWithViews();
+
+//
+builder.Services.AddRazorPages();
+//
 
 builder.Services.AddDistributedMemoryCache();
 // Thêm dịch vụ session vào
@@ -24,6 +33,20 @@ builder.Services.AddSession(options =>
 options.Cookie.HttpOnly = true; // Sử dụng http-only cookie khi gửi session ID
 options.Cookie.IsEssential = true; // Đảm bảo cookie này là bắt buộc để ứng dụng hoạt động
 });
+
+
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Admin/Account/Login";
+    options.AccessDeniedPath = "/Admin/Account/Login";
+    options.SlidingExpiration = true;
+});
+
 
 
 var app = builder.Build();
@@ -52,7 +75,9 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+    //pattern: "{controller=HomeAdmin}/{action=Index}/{id?}"
+    );
 app.MapControllerRoute(
     name: "Contact",
     pattern: "lien-he",

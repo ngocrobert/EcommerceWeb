@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Identity;
-@model IEnumerable<IdentityRole>
+﻿@using WebBanHangOnline.Data
+@model IEnumerable<ApplicationUser>
 @{
-	ViewData["Title"] = "Danh sách Quyền";
+	ViewData["Title"] = "Quản lý tài khoản";
 	Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -14,27 +14,10 @@
 			<a href="/admin" class="nav-link">Home</a>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="/admin/order" class="nav-link">@ViewData["Title"]</a>
+			<a href="/admin/account" class="nav-link">@ViewData["Title"]</a>
 		</li>
 	</ul>
 }
-
-	<!-- Content Header (Page header) -->
-	<section class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<h1>Blank Page</h1>
-				</div>
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-right">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">Blank Page</li>
-					</ol>
-				</div>
-			</div>
-		</div><!-- /.container-fluid -->
-	</section>
 
 	<!-- Main content -->
 	<section class="content">
@@ -42,10 +25,10 @@
 		<!-- Default box -->
 		<div class="card">
 			<div class="card-header">
-				<h3 class="card-title">Danh sách Quyền</h3>
+				<h3 class="card-title">Danh sách Tài khoản</h3>
 
 				<div class="card-tools">
-					<a href="/admin/role/create" class="btn btn-success">Thêm mới</a>
+					<a href="/admin/account/create" class="btn btn-success">Thêm mới</a>
 				</div>
 			</div>
 			<div class="card-body">
@@ -53,7 +36,10 @@
 					<thead>
 						<tr>
 							<th>#</th>
-							<th>Tên</th>
+							<th>Tài khoản</th>
+							<th>Họ tên</th>
+							<th>Email</th>
+							
 							<th></th>
 						</tr>
 					</thead>
@@ -65,8 +51,14 @@
 						{
 							<tr>
 								<td>@i</td>
-								<td>@item.Name</td>
-								<td></td>
+								<td>@item.UserName</td>
+								<td>@item.FullName</td>
+								<td>@item.Email</td>
+								<td>
+									<a href="/admin/account/edit/@item.UserName" class="btn btn-sm btn-primary">Sửa</a>
+									<a href="#" data-user="@item.UserName" class="btn btn-sm btn-danger btnDelete">Xóa</a>
+
+								</td>
 							</tr>
 							i++;
 						}

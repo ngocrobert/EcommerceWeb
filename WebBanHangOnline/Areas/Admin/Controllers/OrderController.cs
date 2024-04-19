@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebBanHangOnline.Data;
 using WebBanHangOnline.Models.EF;
@@ -8,6 +9,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
 {
     [Area("admin")]
     [Route("admin/order")]
+    [Authorize(Roles = "Admin")]
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _db;
