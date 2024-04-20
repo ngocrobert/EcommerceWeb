@@ -1,0 +1,57 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model WebBanHangOnline.Models.EF.Subscribe
+
+<div class="newsletter">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="newsletter_text d-flex flex-column justify-content-center align-items-lg-start align-items-md-center text-center">
+					<h4>Newsletter</h4>
+					<p>Subscribe to our newsletter and get 20% off your first purchase</p>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<form asp-action="Subscribe" asp-controller="Home" data-ajax="true"	data-ajax-method="POST" data-ajax-begin="OnBegin" data-ajax-failure="OnFailure" data-ajax-success="OnSuccess" data-ajax-complete="OnComplete">
+					<div class="newsletter_form d-flex flex-md-row flex-column flex-xs-column align-items-center justify-content-lg-end justify-content-center">
+						<input id="newsletter_email" asp-for="Email" type="email" placeholder="Your email" required="required" data-error="Valid email is required.">
+						<button id="newsletter_submit" type="submit" class="newsletter_submit_btn trans_300" value="Submit">subscribe</button>
+					</div>
+				</form>
+
+				@*@using (Html.BeginForm("Subscribe", "Home", FormMethod.Post, new {id="subscribeForm"}))
+				{
+				@Html.AntiForgeryToken()
+				<div class="newsletter_form d-flex flex-md-row flex-column flex-xs-column align-items-center justify-content-lg-end justify-content-center">
+				<input id="newsletter_email" name="email" type="email" placeholder="Your email" required="required" data-error="Valid email is required.">
+				<button id="newsletter_submit" type="submit" class="newsletter_submit_btn trans_300" value="Submit">subscribe</button>
+				</div>
+				}*@
+
+
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts{
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js"></script>
+	<script type="text/javascript">
+        function OnBegin() {
+            $("#progress").show();
+        }
+
+        function OnFailure(response) {
+            alert("Error occured.");
+        }
+
+        function OnSuccess(response) {
+            //var message = "Name: " + response.Name;
+            //message += "\nCountry: " + response.Country;
+            alert(response);
+        }
+
+        function OnComplete() {
+            $("#progress").hide();
+        }
+    </script>
+}

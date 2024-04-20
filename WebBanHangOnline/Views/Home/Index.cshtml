@@ -1,7 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Home Page";
 }
-	<link rel="stylesheet" type="text/css" href="~/assets/styles/main_styles.css">
+<link rel="stylesheet" type="text/css" href="~/assets/styles/main_styles.css">
 
 <!-- Slider -->
 <div class="main_slider" style="background-image:url(/Uploads/slider_1.jpg)">
@@ -18,7 +18,6 @@
 	</div>
 </div>
 <!-- Banner -->
-
 @await Component.InvokeAsync("MenuProductCategory")
 
 <!-- New Arrivals -->
@@ -70,7 +69,6 @@
 </div>
 
 <!-- Best Sellers -->
-
 @await Component.InvokeAsync("Partial_ProductSale")
 
 <!-- Benefit -->
@@ -119,47 +117,8 @@
 </div>
 
 <!-- Blogs -->
+@await Component.InvokeAsync("Partial_News_Home")
 
-<div class="blogs">
-	<div class="container">
-		<div class="row">
-			<div class="col text-center">
-				<div class="section_title">
-					<h2>Latest Blogs</h2>
-				</div>
-			</div>
-		</div>
-		<div class="row blogs_container">
-			<div class="col-lg-4 blog_item_col">
-				<div class="blog_item">
-					<div class="blog_background" style="background-image:url(/Uploads/blog_1.jpg)"></div>
-					<div class="blog_content d-flex flex-column align-items-center justify-content-center text-center">
-						<h4 class="blog_title">Here are the trends I see coming this fall</h4>
-						<span class="blog_meta">by admin | dec 01, 2017</span>
-						<a class="blog_more" href="#">Read more</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-4 blog_item_col">
-				<div class="blog_item">
-					<div class="blog_background" style="background-image:url(/Uploads/blog_2.jpg)"></div>
-					<div class="blog_content d-flex flex-column align-items-center justify-content-center text-center">
-						<h4 class="blog_title">Here are the trends I see coming this fall</h4>
-						<span class="blog_meta">by admin | dec 01, 2017</span>
-						<a class="blog_more" href="#">Read more</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-4 blog_item_col">
-				<div class="blog_item">
-					<div class="blog_background" style="background-image:url(/Uploads/blog_3.jpg)"></div>
-					<div class="blog_content d-flex flex-column align-items-center justify-content-center text-center">
-						<h4 class="blog_title">Here are the trends I see coming this fall</h4>
-						<span class="blog_meta">by admin | dec 01, 2017</span>
-						<a class="blog_more" href="#">Read more</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+<!-- Newsletter -->
+@await Html.PartialAsync("Partial_Subcribe")
+

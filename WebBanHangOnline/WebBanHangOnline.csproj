@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.Unobtrusive.Ajax" Version="2.0.0" />
     <PackageReference Include="CKSource.CKFinder" Version="3.5.2" />
     <PackageReference Include="CKSource.CKFinder.Connector.Config" Version="3.5.2" />
     <PackageReference Include="CKSource.CKFinder.Connector.Core" Version="3.5.2" />
