@@ -107,6 +107,14 @@ app.MapControllerRoute(
     name: "Products",
     pattern: "san-pham",
     defaults: new { controller = "Product", action = "Index" });
+app.MapControllerRoute(
+    name: "DetailNew",
+    pattern: "{alias}-n{id}",
+    defaults: new { controller = "News", action = "Detail" });
+app.MapControllerRoute(
+    name: "NewsList",
+    pattern: "tin-tuc",
+    defaults: new { controller = "News", action = "Index" });
 
 app.MapRazorPages();
 
