@@ -108,6 +108,22 @@ namespace WebBanHangOnline.Controllers
                     string emailAdmin = this.Configuration.GetValue<string>("Smtp:EmailAdmin");
                     this.SendHtmlFormattedEmail(emailAdmin, "Đơn hàng #" + order.Code, bodyAdmin.ToString());
 
+                    //xóa số lượng SP đã được đặt
+                    foreach(var sp in cart.Items)
+                    {
+                        var product = _db.Products.FirstOrDefault(x => x.Id == sp.ProductId);
+                        if(product!=null)
+                        {
+                            product.Quantity -= sp.Quantity;
+                            _db.Products.Update(product);
+                            _db.SaveChanges();
+                        }
+                        else
+                        {
+                            return Json(code);
+                        }
+                    }
+
                     cart.ClearCart();
                     HttpContext.Session.Set("Cart", cart);
                     return RedirectToAction("CheckOutSuccess");
