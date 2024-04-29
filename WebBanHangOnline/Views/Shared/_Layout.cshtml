@@ -74,8 +74,8 @@
 										<i class="fa fa-angle-down"></i>
 									</a>
 											<ul class="account_selection">
-										<li><a href="account/login"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-										<li><a href="account/register"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+										<li><a href="/account/login"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+										<li><a href="/account/register"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
 									</ul>
 										}
 										else
@@ -84,8 +84,9 @@
 										Welcome: @User.Identity.Name
 										<i class="fa fa-angle-down"></i>
 									</a>
-											<ul class="account_selection" style="width:100px">
-										<li><a href="/"><i class="fa fa-user" aria-hidden="true"></i>Profile</a></li>
+											<ul class="account_selection" style="width:max-content">
+										<li><a href="/account/profile"><i class="fa fa-user" aria-hidden="true"></i>Profile</a></li>
+										<li><a href="/account/like"><i class="fa fa-user" aria-hidden="true"></i>Sản phẩm yêu thích</a></li>
 										<li><a href="javascript:document.getElementById('logOffForm').submit()"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
 									</ul>
 										}
@@ -120,10 +121,21 @@
 								<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
 								<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
 								<li class="checkout">
-									<a href="/gio-hang">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										<span id="checkout_items" class="checkout_items">0</span>
-									</a>
+										@if (!User.Identity.IsAuthenticated)
+										{
+											<a href="/account/login">
+												<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+												<span id="checkout_items" class="checkout_items">0</span>
+											</a>
+										}
+										else
+										{
+											<a href="/gio-hang">
+												<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+												<span id="checkout_items" class="checkout_items">0</span>
+											</a>
+										}
+
 								</li>
 							</ul>
 							<div class="hamburger_container">

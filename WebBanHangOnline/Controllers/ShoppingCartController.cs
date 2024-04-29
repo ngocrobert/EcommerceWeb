@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
@@ -10,18 +12,25 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebBanHangOnline.Controllers
 {
+    [Authorize]
     public class ShoppingCartController : Controller
     {
         private readonly ApplicationDbContext _db;
         private IHostingEnvironment Environment { get; set; }
         public IConfiguration Configuration { get; set; }
-        public ShoppingCartController(ApplicationDbContext db, IConfiguration _configuration, IHostingEnvironment environment)
+
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
+        public ShoppingCartController(ApplicationDbContext db, IConfiguration _configuration, IHostingEnvironment environment, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _db = db;
             Configuration = _configuration;
             Environment = environment;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
-
+        //[AllowAnonymous]
         public IActionResult Index()
         {
             //ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
@@ -37,6 +46,7 @@ namespace WebBanHangOnline.Controllers
             return View();
         }
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult CheckOut()
         {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
@@ -47,17 +57,28 @@ namespace WebBanHangOnline.Controllers
             return View();
         }
         [HttpGet]
+        [AllowAnonymous]
+
         public IActionResult CheckOutSuccess()
         {
             
             return View();
         }
+        [AllowAnonymous]
+
         public IActionResult Partial_CheckOut()
         {
+            //var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            //if (user != null)
+            //{
+            //    ViewBag.User = user;
+            //}
             return PartialView("Partial_CheckOut");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+
         public IActionResult CheckOut(OrderViewModel req)
         {
             var code = new { success = false, code = -1 };
@@ -182,6 +203,8 @@ namespace WebBanHangOnline.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public IActionResult Partial_Item_ThanhToan()
         {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");

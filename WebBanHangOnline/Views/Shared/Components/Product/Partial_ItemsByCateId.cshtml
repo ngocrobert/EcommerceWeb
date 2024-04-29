@@ -28,7 +28,18 @@
 
 				</div>
 			</div>
-			<div class="red_button add_to_cart_button" ><a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a></div>
+			<div class="red_button add_to_cart_button">
+				@*<a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a>*@
+				@if (!User.Identity.IsAuthenticated)
+				{
+					<a href="/account/login" class="" data-id="@item.Id">add to cart</a>
+
+				}
+				else
+				{
+					<a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a>
+				}
+			</div>
 		</div>
 
 

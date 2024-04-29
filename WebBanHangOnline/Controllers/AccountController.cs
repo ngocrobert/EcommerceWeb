@@ -27,18 +27,18 @@ namespace WebBanHangOnline.Controllers
             return View(items);
 
         }
-        [Route("create")]
+        [Route("register")]
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Create()
         {
-            ViewBag.Role = new SelectList(_db.Roles.ToList(), "Id", "Name");
+            //ViewBag.Role = new SelectList(_db.Roles.ToList(), "Id", "Name");
             return View();
         }
 
         //
         // POST: /Account/Register
-        [Route("create")]
+        [Route("register")]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -57,7 +57,7 @@ namespace WebBanHangOnline.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    //await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
 
                     // Lấy vai trò được chọn từ form
                         // Thêm người dùng vào vai trò
@@ -68,7 +68,7 @@ namespace WebBanHangOnline.Controllers
                 }
                 AddErrors(result);
             }
-            ViewBag.Role = new SelectList(_db.Roles.ToList(), "Id", "Name");
+            //ViewBag.Role = new SelectList(_db.Roles.ToList(), "Id", "Name");
             return View(model);
         }
 
@@ -117,6 +117,33 @@ namespace WebBanHangOnline.Controllers
             }
 
             return View(model);
+        }
+
+        [Route("profile")]
+        public  async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var item = new CreateAccountViewModel();
+            item.Email = user.Email;
+            item.FullName = user.FullName;
+            item.Phone = user.PhoneNumber;
+            item.UserName = user.UserName;
+            return View(item);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostProfile(CreateAccountViewModel req)
+        {
+            var user = await _userManager.FindByEmailAsync(req.Email);
+            user.FullName = req.FullName;
+            user.PhoneNumber = req.Phone;
+
+            var rs = await _userManager.UpdateAsync(user);
+                if(rs.Succeeded)
+            {
+                return RedirectToAction("Profile");
+            }
+                return View(req);
         }
 
         // POST: /Account/LogOff
