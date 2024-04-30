@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebBanHangOnline.Data;
 
@@ -11,9 +12,10 @@ using WebBanHangOnline.Data;
 namespace WebBanHangOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240430073513_InsertCustomerIDOrder1")]
+    partial class InsertCustomerIDOrder1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -755,43 +757,6 @@ namespace WebBanHangOnline.Data.Migrations
                     b.ToTable("tb_ProductImage");
                 });
 
-            modelBuilder.Entity("WebBanHangOnline.Models.EF.ReviewProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Avatar")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("tb_Review");
-                });
-
             modelBuilder.Entity("WebBanHangOnline.Models.EF.Subscribe", b =>
                 {
                     b.Property<int>("Id")
@@ -941,17 +906,6 @@ namespace WebBanHangOnline.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("WebBanHangOnline.Models.EF.ReviewProduct", b =>
-                {
-                    b.HasOne("WebBanHangOnline.Models.EF.Product", "Product")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("WebBanHangOnline.Models.EF.Category", b =>
                 {
                     b.Navigation("News");
@@ -969,8 +923,6 @@ namespace WebBanHangOnline.Data.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("ProductImage");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("WebBanHangOnline.Models.EF.ProductCategory", b =>

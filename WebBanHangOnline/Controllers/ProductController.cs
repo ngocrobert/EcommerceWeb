@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebBanHangOnline.Data;
+using WebBanHangOnline.Models.EF;
+using X.PagedList;
 
 namespace WebBanHangOnline.Controllers
 {
@@ -55,6 +57,11 @@ namespace WebBanHangOnline.Controllers
             //var item = _db.Products.Include(p => p.ProductCategory).Where(x => x.Id == id);
             item.ProductCategory = _db.ProductCategories.Find(item.ProductCategoryId);
             item.ProductImage = _db.ProductImages.Where(x => x.ProductId == id).ToList();
+            var countReview = _db.Reviews.Where(x=>x.ProductId == id).Count();
+            ViewBag.CountReview = countReview;
+            // phan trang review
+            
+            //
             return View(item);
         }
     }

@@ -11,6 +11,7 @@
 
 	{
 		@Html.AntiForgeryToken()
+		@Html.HiddenFor(x=>x.CustomerId)
 		<h3>Thông tin khách hàng</h3>
 		@if(!User.Identity.IsAuthenticated)
 		{

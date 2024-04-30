@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -102,7 +103,11 @@ namespace WebBanHangOnline.Controllers
                     order.TypePayment = req.TypePayment;
                     order.CreatedDate = DateTime.Now;
                     order.CreatedBy = req.Phone;
-                    order.ModifiedDate = DateTime.Now; 
+                    order.ModifiedDate = DateTime.Now;
+                    if(User.Identity.IsAuthenticated)
+                    {
+                        order.CustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    }
                     Random rd = new Random();
                     order.Code = "DH" + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9);
                     _db.Orders.Add(order);
@@ -215,6 +220,8 @@ namespace WebBanHangOnline.Controllers
             return PartialView("Partial_Item_ThanhToan");
         }
         [HttpGet]
+        [AllowAnonymous]
+
         public IActionResult ShowCount()
         {
             ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
