@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Đặt hàng thành công";
+    ViewData["Title"] = "Đặt hàng thất bại";
 }
 
 <link rel="stylesheet" type="text/css" href="~/assets/styles/categories_styles.css">
@@ -15,7 +15,7 @@
 			<div class="breadcrumbs d-flex flex-row align-items-center">
 				<ul>
 					<li><a href="index.html">Home</a></li>
-					<li class="active"><a href="index.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Giỏ hàng</a></li>
+					<li class="active"><a href="index.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Thanh toán</a></li>
 				</ul>
 			</div>
 
@@ -23,16 +23,9 @@
 			<!-- Main Content -->
 			<div class="row">
 				<div class="col-md-12" id="load_data">
-					
-					@if(TempData["Message"] != null) {
-						<h1>Thanh toán</h1>
-						<h3>Bạn đã mua hàng thành công với @TempData["Message"]</h3>
-					}
-					else
-					{
-						<h2>Bạn đã mua hàng thành công!</h2>
-					}
-					@*<h3>@TempData["Message"]</h3>*@
+					<h2>Thanh toán thất bại</h2>
+					 <h3>@TempData["Message"]</h3>
+
 				</div>
 				
 			</div>

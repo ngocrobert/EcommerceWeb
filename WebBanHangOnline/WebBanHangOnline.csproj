@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Services\tsttxpfs.haq~" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.Unobtrusive.Ajax" Version="2.0.0" />
     <PackageReference Include="CKSource.CKFinder" Version="3.5.2" />
     <PackageReference Include="CKSource.CKFinder.Connector.Config" Version="3.5.2" />

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Net.Mail;
 using WebBanHangOnline.Data;
 using WebBanHangOnline.Models;
 
@@ -14,12 +16,14 @@ namespace WebBanHangOnline.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _db;
+        public IConfiguration Configuration { get; set; }
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext db)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext db, IConfiguration _configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
+            Configuration = _configuration;
         }
         public IActionResult Index()
         {
@@ -146,6 +150,97 @@ namespace WebBanHangOnline.Controllers
                 return View(req);
         }
 
+        [Route("forgotPassword")]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [Route("forgotPassword")]
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    ModelState.AddModelError(string.Empty, "Email không hợp lệ hoặc không tồn tại.");
+                }
+
+                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+
+                // Send an email with this link
+                string code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                this.SendHtmlFormattedEmail(model.Email,"Quên mật khẩu", "Bạn click vào <a href='"+callbackUrl+"'>link này</a> để reset mật khẩu");
+                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [Route("ForgotPasswordConfirmation")]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        // GET: /Account/ResetPassword
+        [Route("ResetPassword")]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string code)
+        {
+            return code == null ? View("Error") : View();
+        }
+
+        //
+        // POST: /Account/ResetPassword
+        [Route("ResetPassword")]
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            AddErrors(result);
+            return View();
+        }
+
+        //
+        // GET: /Account/ResetPasswordConfirmation
+        [Route("ResetPasswordConfirmation")]
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
         // POST: /Account/LogOff
         [Route("LogOff")]
         [HttpPost]
@@ -171,6 +266,33 @@ namespace WebBanHangOnline.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private void SendHtmlFormattedEmail(string recepEmail, string subject, string body)
+        {
+            string host = this.Configuration.GetValue<string>("Smtp:Server");
+            int port = this.Configuration.GetValue<int>("Smtp:Port");
+            string fromAddress = this.Configuration.GetValue<string>("Smtp:FromAddress");
+            string userName = this.Configuration.GetValue<string>("Smtp:Username");
+            string password = this.Configuration.GetValue<string>("Smtp:Password");
+            using (MailMessage mm = new MailMessage(fromAddress, recepEmail))
+            {
+                MailAddress fromEmail = new MailAddress(fromAddress, "ShopOnline");
+                mm.From = fromEmail;
+                mm.Subject = subject;
+                mm.Body = body;
+                mm.IsBodyHtml = true;
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Host = host;
+                    smtp.EnableSsl = true;
+                    NetworkCredential networkCred = new NetworkCredential(userName, password);
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = networkCred;
+                    smtp.Port = port;
+                    smtp.Send(mm);
+                }
             }
         }
     }

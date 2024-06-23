@@ -10,6 +10,8 @@ using WebBanHangOnline.Extensions;
 using WebBanHangOnline.Models;
 using WebBanHangOnline.Models.EF;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using WebBanHangOnline.Services;
+using WebBanHangOnline.Models.Payments;
 
 namespace WebBanHangOnline.Controllers
 {
@@ -22,14 +24,16 @@ namespace WebBanHangOnline.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IVnPayService _vnPayService;
 
-        public ShoppingCartController(ApplicationDbContext db, IConfiguration _configuration, IHostingEnvironment environment, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public ShoppingCartController(ApplicationDbContext db, IConfiguration _configuration, IHostingEnvironment environment, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IVnPayService vnPayService)
         {
             _db = db;
             Configuration = _configuration;
             Environment = environment;
             _userManager = userManager;
             _signInManager = signInManager;
+            _vnPayService = vnPayService;
         }
         //[AllowAnonymous]
         public IActionResult Index()
@@ -65,6 +69,31 @@ namespace WebBanHangOnline.Controllers
             
             return View();
         }
+
+        [Authorize]
+        public IActionResult VnPayPaymentReturn()
+        {
+            var response = _vnPayService.PaymentExecute(Request.Query);
+
+            if(response == null || response.VnPayResponseCode != "00")
+            {
+                TempData["Message"] = $"Lỗi thanh toán VnPay: {response.VnPayResponseCode}";
+                return RedirectToAction("VnPayPaymentFail");
+            }
+
+            // lưu đơn hàng vào DB
+            
+            TempData["Message"] = $"số tiền thanh toán (VND): {response.Amount}";
+            return RedirectToAction("CheckOutSuccess");
+            //return View();
+        }
+
+        [Authorize]
+        public IActionResult VnPayPaymentFail()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
 
         public IActionResult Partial_CheckOut()
@@ -85,7 +114,11 @@ namespace WebBanHangOnline.Controllers
             var code = new { success = false, code = -1 };
             if(ModelState.IsValid)
             {
+                
                 ShoppingCart cart = HttpContext.Session.Get<ShoppingCart>("Cart");
+
+                
+
                 if (cart != null)
                 {
                     Order order = new Order();
@@ -110,6 +143,9 @@ namespace WebBanHangOnline.Controllers
                     }
                     Random rd = new Random();
                     order.Code = "DH" + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9) + rd.Next(0, 9);
+
+                   
+
                     _db.Orders.Add(order);
                     _db.SaveChanges();
 
@@ -152,7 +188,25 @@ namespace WebBanHangOnline.Controllers
 
                     cart.ClearCart();
                     HttpContext.Session.Set("Cart", cart);
-                    return RedirectToAction("CheckOutSuccess");
+                    //return RedirectToAction("CheckOutSuccess");
+
+                    // ktra phuong thuc thanh toan co phai VnPay ko?
+                    if (req.TypePayment == 1)
+                    {
+                        var vnPayModel = new VnPaymentRequestModel
+                        {
+                            Amount = order.TotalAmount,
+                            CreatedDate = DateTime.Now,
+                            Description = $"{req.CustomerName} {req.Phone}",
+                            FullName = req.CustomerName,
+                            OrderCode = order.Code
+
+                        };
+                        // chuyen den trang VnPay
+                        return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
+
+                    } 
+                    else { return RedirectToAction("CheckOutSuccess"); }
                 }
 
             }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Web.Mvc;
 using WebBanHangOnline.Data;
 using Microsoft.AspNetCore.Http;
+using WebBanHangOnline.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
 
 var app = builder.Build();
